@@ -16,7 +16,7 @@ app.use(express.static(`${__dirname}/src/views`));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/", temp); //미들웨어 등록
-app.use("/post", post); //미들웨어 등록
+app.use("/moae", temp); //미들웨어 등록
+app.use("/moae/post", post); //미들웨어 등록
 
 module.exports = app;

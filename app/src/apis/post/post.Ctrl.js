@@ -1,15 +1,24 @@
 "use strict";
 
 const process = {
-  create: (req, res) => {
-    console.log("create입니다");
+  createPost: (req, res) => {
+    console.log("createPost입니다");
     console.log(req.body);
   },
-  read: (req, res) => {
-    console.log("read입니다");
+  readPost: (req, res) => {
+    console.log("readPost입니다");
   },
-  update: (req, res) => {
-    console.log("업데이트입니다.");
+  updatePost: (req, res) => {
+    console.log("updatePost입니다");
+  },
+  deletePost: (req, res) => {
+    console.log("deletePost입니다");
+  },
+  readAllPosts: (req, res) => {
+    console.log("readAllPost입니다.");
+  },
+  readMainPosts: (req, res) => {
+    console.log("readMainPosts입니다.");
   },
 };
 

@@ -14,7 +14,7 @@ function submit() {
     content: content.value,
   };
 
-  fetch("/post", {
+  fetch("/moae/post", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
