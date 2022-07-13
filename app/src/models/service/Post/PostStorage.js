@@ -3,21 +3,25 @@
 const db = require("../../../config/database");
 
 class PostStorage {
-  //   static #data = {
-  //     images: ["이미지1", "이미지2"],
-  //     postNo: [1, 2],
-  //     userNo: [2, 4],
-  //   };
-
-  static async getPostInfo() {
+  //   static async getPostInfo() {
+  //     try {
+  //       const query = "SELECT * FROM posts";
+  //       const response = await db.query(query);
+  //       return response[0];
+  //     } catch (err) {
+  //       throw {
+  //         msg: "오류오류오류오류오류오류",
+  //       };
+  //     }
+  //   }
+  static async addNewPost({ userNo, content }) {
     try {
-      const query = "SELECT * FROM posts";
-      const response = await db.query(query);
+      const query = "INSERT INTO posts(user_no, content) VALUES(?, ?);";
+      const response = await db.query(query, [userNo, content]);
       return response[0];
     } catch (err) {
-      throw {
-        msg: "오류오류오류오류오류오류",
-      };
+      console.log(err);
+      throw { success: false, msg: err };
     }
   }
 }

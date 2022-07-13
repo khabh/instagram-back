@@ -1,20 +1,13 @@
 "use strict";
 
-const PostStorage = require("../../models/service/Post/PostStorage");
 const Post = require("../../models/service/Post/Post");
 
 const process = {
   createPost: async (req, res) => {
     try {
-      const post = new Post(req.body);
+      const post = new Post(req);
       const response = await post.addPost();
-      console.log(response);
-      // console.log("createPost입니다");
-      // console.log(PostStorage.getPostInfo("images", "postNo"));
-      // const response = {};
-      // response.success = true;
-      // response.postNo = 1;
-      // response.msg = "게시물이 생성되었습니다.";
+
       return res.json(response);
     } catch (err) {
       throw res.status(500).json(err);
