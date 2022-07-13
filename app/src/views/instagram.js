@@ -18,14 +18,14 @@ function submit() {
   fetch("/moae/post", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json;charset=utf-8",
     },
     body: JSON.stringify(req),
   })
     .then((res) => res.json())
     .then(console.log)
     .catch((err) => {
-      console.error(new Error("게시물 생성 중 오류 발생"));
+      console.error(err);
     });
 }
 
