@@ -14,6 +14,10 @@ class Post {
         this.body
       );
       if (insertId && affectedRows) {
+        const addImageResult = PostStorage.addImages(
+          this.body.images,
+          insertId
+        );
         // try {
         //   const addImageResult = await PostStorage.addImages(
         //     this.body.images,
