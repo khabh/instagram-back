@@ -13,13 +13,26 @@ class Post {
       const { affectedRows, insertId } = await PostStorage.addNewPost(
         this.body
       );
-      if (affectedRows === 1) {
-        return {
-          success: true,
-          postNo: insertId,
-          msg: "게시글이 성공적으로 작성되었습니다.",
-        };
-      } else return { success: false, msg: "게시글이 작성되지 않았습니다." };
+      if (insertId && affectedRows) {
+        // try {
+        //   const addImageResult = await PostStorage.addImages(
+        //     this.body.images,
+        //     insertId
+        //   );
+        //   if (addImageResult.affectedRows) {
+        //
+        //   } else {
+        //     return { success: false, msg: "이미지 업로드를 실패했습니다." };
+        //   }
+        // } catch (err) {
+        //   throw { success: false, msg: err.msg };
+        // }
+      }
+      return {
+        success: true,
+        postNo: insertId,
+        msg: "게시글이 성공적으로 작성되었습니다.",
+      };
     } catch (err) {
       throw { success: false, msg: err.msg };
     }
