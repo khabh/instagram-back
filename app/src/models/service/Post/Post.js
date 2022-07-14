@@ -8,10 +8,27 @@ class Post {
     this.query = req.query;
   }
 
+  async readAllPosts() {
+    const response = await PostStorage.readAllPosts();
+    console.log(response);
+    return response;
+  }
+
   async readOnePost() {
     try {
       const response = await PostStorage.getOnePost(this.params.postNo);
-      return response;
+      const images = response.reduce((result, postInfo) => {
+        result.push(postInfo.image_url);
+        return result;
+      }, []);
+      const postInfo = {};
+      postInfo.content = response[0].content;
+      postInfo.images = images;
+      postInfo.date = response[0].updated_date
+        ? response[0].updated_date
+        : response[0].created_date;
+
+      return postInfo;
     } catch (err) {
       throw { success: false, msg: err.msg };
     }
@@ -50,6 +67,11 @@ class Post {
     } catch (err) {
       throw { success: false, msg: err.msg };
     }
+  }
+
+  async deletePost() {
+    const response = await PostStorage.deletePost(this.params.postNo);
+    return response;
   }
 }
 

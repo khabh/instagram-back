@@ -30,10 +30,15 @@ const process = {
 
   deletePost: (req, res) => {
     console.log("deletePost입니다");
+    const post = new Post(req);
+    const response = post.deletePost();
+    return res.json(response);
   },
 
-  readAllPosts: (req, res) => {
-    console.log("readAllPost입니다.");
+  readAllPosts: async (req, res) => {
+    const post = new Post(req);
+    const response = await post.readAllPosts();
+    return res.json(response);
   },
 
   readMainPosts: (req, res) => {

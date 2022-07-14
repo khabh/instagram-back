@@ -3,6 +3,8 @@
 //모듈
 const express = require("express");
 const app = express();
+const dotenv = require("dotenv");
+dotenv.config();
 
 //앱 세팅
 app.set("views", "./src/views");
