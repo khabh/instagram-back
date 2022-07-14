@@ -14,8 +14,11 @@ const process = {
     }
   },
 
-  readPost: (req, res) => {
+  readPost: async (req, res) => {
     console.log("readPost입니다");
+    const post = new Post(req);
+    const response = await post.readOnePost();
+    return res.json(response);
   },
 
   updatePost: (req, res) => {

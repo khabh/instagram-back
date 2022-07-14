@@ -8,6 +8,11 @@ class Post {
     this.query = req.query;
   }
 
+  async readOnePost() {
+    const response = await PostStorage.getOnePost(this.params.postNo);
+    return response;
+  }
+
   async addPost() {
     try {
       const { affectedRows, insertId } = await PostStorage.addNewPost(
@@ -32,6 +37,7 @@ class Post {
         //   throw { success: false, msg: err.msg };
         // }
       }
+
       return {
         success: true,
         postNo: insertId,
