@@ -41,8 +41,10 @@ const process = {
     return res.json(response);
   },
 
-  readMainPosts: (req, res) => {
-    console.log("readMainPosts입니다.");
+  readMainPosts: async (req, res) => {
+    const post = new Post(req);
+    const response = await post.readProfilePosts();
+    return res.json(response);
   },
 };
 

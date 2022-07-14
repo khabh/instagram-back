@@ -73,6 +73,23 @@ class Post {
     const response = await PostStorage.deletePost(this.params.postNo);
     return response;
   }
+
+  async readProfilePosts() {
+    const postInfo = await PostStorage.getProfilePosts(this.params.userNo);
+    const profilePosts = [];
+    postInfo.forEach((postInfo) => {
+      const response = {
+        postNo: postInfo.no,
+        firstImage: postInfo.image_url,
+        date: postInfo.updated_date
+          ? postInfo.updated_date
+          : postInfo.created_date,
+      };
+      profilePosts.push(response);
+    });
+    console.log(profilePosts);
+    return profilePosts;
+  }
 }
 
 module.exports = Post;
