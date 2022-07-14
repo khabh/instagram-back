@@ -9,8 +9,12 @@ class Post {
   }
 
   async readOnePost() {
-    const response = await PostStorage.getOnePost(this.params.postNo);
-    return response;
+    try {
+      const response = await PostStorage.getOnePost(this.params.postNo);
+      return response;
+    } catch (err) {
+      throw { success: false, msg: err.msg };
+    }
   }
 
   async addPost() {

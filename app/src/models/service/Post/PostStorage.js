@@ -3,17 +3,6 @@
 const db = require("../../../config/database");
 
 class PostStorage {
-  //   static async getPostInfo() {
-  //     try {
-  //       const query = "SELECT * FROM posts";
-  //       const response = await db.query(query);
-  //       return response[0];
-  //     } catch (err) {
-  //       throw {
-  //         msg: "오류오류오류오류오류오류",
-  //       };
-  //     }
-  //   }
   static async addNewPost({ userNo, content }) {
     try {
       const query = "INSERT INTO posts(user_no, content) VALUES(?, ?);";
@@ -39,22 +28,27 @@ class PostStorage {
   }
 
   static async getOnePost(postNo) {
-    const postInfo = {};
-    const query =
-      "SELECT created_date, updated_date, posts.content, images.image_url FROM posts LEFT JOIN images ON posts.no = ? ORDER BY images.order_no;";
-    const response = await db.query(query, [postNo]);
-    const images = response[0].reduce((result, postInfo) => {
-      result.push(postInfo.image_url);
-      return result;
-    }, []);
+    try {
+      const postInfo = {};
+      const query =
+        "SELECT created_date, updated_date, posts.content, images.image_url FROM posts LEFT JOIN images ON posts.no = ? ORDER BY images.order_no;";
+      const response = await db.query(query, [postNo]);
+      const images = response[0].reduce((result, postInfo) => {
+        result.push(postInfo.image_url);
+        return result;
+      }, []);
 
-    postInfo.content = response[0][0].content;
-    postInfo.images = images;
-    postInfo.date = response[0][0].updated_date
-      ? response[0][0].updated_date
-      : response[0][0].created_date;
+      postInfo.content = response[0][0].content;
+      postInfo.images = images;
+      postInfo.date = response[0][0].updated_date
+        ? response[0][0].updated_date
+        : response[0][0].created_date;
 
-    return postInfo;
+      return postInfo;
+    } catch (err) {
+      console.log(err);
+      throw { success: false, msg: err };
+    }
   }
 }
 
