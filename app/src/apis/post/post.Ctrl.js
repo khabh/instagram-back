@@ -32,7 +32,6 @@ const process = {
   },
 
   deletePost: async (req, res) => {
-    console.log("deletePost입니다");
     const post = new Post(req);
     const response = await post.deletePost();
     return res.json(response);

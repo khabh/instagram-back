@@ -9,14 +9,21 @@ class Post {
   }
 
   async readAllPosts() {
-    const response = await PostStorage.readAllPosts();
-    console.log(response);
-    return response;
+    try {
+      const response = await PostStorage.readAllPosts();
+      console.log(response);
+      return response;
+    } catch (err) {
+      throw { success: false, msg: err.msg };
+    }
   }
 
   async readOnePost() {
     try {
       const response = await PostStorage.getOnePost(this.params.postNo);
+      if (response.length === 0) {
+        return { success: false, msg: "존재하지 않는 post입니다." };
+      }
       const images = response.reduce((result, postInfo) => {
         result.push(postInfo.image_url);
         return result;
@@ -38,9 +45,6 @@ class Post {
     try {
       if (this.body.images.length === 0) {
         return { success: false, msg: "이미지를 추가해 주세요" };
-      }
-      if (!this.body.content) {
-        return { success: false, msg: "내용을 추가해 주세요" };
       }
       const { affectedRows, insertId } = await PostStorage.addNewPost(
         this.body
@@ -82,33 +86,50 @@ class Post {
   }
 
   async deletePost() {
-    const response = await PostStorage.deletePost(this.params.postNo);
-    return response;
+    try {
+      const response = await PostStorage.deletePost(this.params.postNo);
+
+      return response.affectedRows
+        ? { success: true, msg: "게시물이 삭제되었습니다." }
+        : { success: false, msg: "게시물이 삭제되지 않았습니다" };
+    } catch (err) {
+      throw { success: false, msg: err.msg };
+    }
   }
 
   async readProfilePosts() {
-    const profilePostInfo = await PostStorage.getProfilePosts(
-      this.params.userNo
-    );
-    const profilePosts = [];
-    profilePostInfo.forEach((postInfo) => {
-      const response = {
-        postNo: postInfo.no,
-        firstImage: postInfo.image_url,
-        date: postInfo.updated_date
-          ? postInfo.updated_date
-          : postInfo.created_date,
-      };
-      profilePosts.push(response);
-    });
+    try {
+      const profilePostInfo = await PostStorage.getProfilePosts(
+        this.params.userNo
+      );
+      const profilePosts = [];
+      profilePostInfo.forEach((postInfo) => {
+        const response = {
+          postNo: postInfo.no,
+          firstImage: postInfo.image_url,
+          date: postInfo.updated_date
+            ? postInfo.updated_date
+            : postInfo.created_date,
+        };
+        profilePosts.push(response);
+      });
 
-    return profilePosts;
+      return profilePosts;
+    } catch (err) {
+      return { success: false, msg: err.msg };
+    }
   }
 
   async updatePost() {
-    const response = await PostStorage.updatePost(this.body);
-    // console.log(response);
-    return response;
+    try {
+      const response = await PostStorage.updatePost(this.body);
+
+      return response.affectedRows
+        ? { success: true, msg: "게시물이 수정되었습니다." }
+        : { success: false, msg: "게시물이 수정되지 않았습니다" };
+    } catch (err) {
+      throw { success: false, msg: err.msg };
+    }
   }
 }
 
