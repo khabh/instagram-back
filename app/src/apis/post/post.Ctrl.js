@@ -24,14 +24,17 @@ const process = {
     }
   },
 
-  updatePost: (req, res) => {
-    console.log("updatePost입니다");
+  updatePost: async (req, res) => {
+    const post = new Post(req);
+    const response = await post.updatePost();
+    console.log(response);
+    return res.json(response);
   },
 
-  deletePost: (req, res) => {
+  deletePost: async (req, res) => {
     console.log("deletePost입니다");
     const post = new Post(req);
-    const response = post.deletePost();
+    const response = await post.deletePost();
     return res.json(response);
   },
 

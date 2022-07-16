@@ -36,27 +36,39 @@ class Post {
 
   async addPost() {
     try {
+      if (this.body.images.length === 0) {
+        return { success: false, msg: "이미지를 추가해 주세요" };
+      }
+      if (!this.body.content) {
+        return { success: false, msg: "내용을 추가해 주세요" };
+      }
       const { affectedRows, insertId } = await PostStorage.addNewPost(
         this.body
       );
+
       if (insertId && affectedRows) {
-        const addImageResult = PostStorage.addImages(
-          this.body.images,
-          insertId
-        );
-        // try {
-        //   const addImageResult = await PostStorage.addImages(
-        //     this.body.images,
-        //     insertId
-        //   );
-        //   if (addImageResult.affectedRows) {
-        //
-        //   } else {
-        //     return { success: false, msg: "이미지 업로드를 실패했습니다." };
-        //   }
-        // } catch (err) {
-        //   throw { success: false, msg: err.msg };
-        // }
+        try {
+          const addImageResult = await PostStorage.addImages(
+            this.body.images,
+            insertId
+          );
+
+          if (this.body.images.length === 1) {
+            return addImageResult.affectedRows
+              ? { success: true, msg: "게시물이 추가되었습니다." }
+              : { success: false, msg: "이미지 업로드를 실패했습니다" };
+          }
+          addImageResult.forEach((result) => {
+            if (!result.affectedRows) {
+              return { success: false, msg: "이미지 업로드를 실패했습니다." };
+            }
+          });
+
+          return { success: true, msg: "게시물이 추가되었습니다." };
+        } catch (err) {
+          console.log();
+          throw { success: false, msg: err.msg };
+        }
       }
 
       return {
@@ -75,9 +87,11 @@ class Post {
   }
 
   async readProfilePosts() {
-    const postInfo = await PostStorage.getProfilePosts(this.params.userNo);
+    const profilePostInfo = await PostStorage.getProfilePosts(
+      this.params.userNo
+    );
     const profilePosts = [];
-    postInfo.forEach((postInfo) => {
+    profilePostInfo.forEach((postInfo) => {
       const response = {
         postNo: postInfo.no,
         firstImage: postInfo.image_url,
@@ -87,8 +101,14 @@ class Post {
       };
       profilePosts.push(response);
     });
-    console.log(profilePosts);
+
     return profilePosts;
+  }
+
+  async updatePost() {
+    const response = await PostStorage.updatePost(this.body);
+    // console.log(response);
+    return response;
   }
 }
 
