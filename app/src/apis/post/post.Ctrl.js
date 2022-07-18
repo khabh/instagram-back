@@ -8,7 +8,7 @@ const process = {
       const post = new Post(req);
       const response = await post.addPost();
 
-      return res.json(response);
+      return res.status(200).json(response);
     } catch (err) {
       throw res.status(500).json(err);
     }
@@ -18,35 +18,50 @@ const process = {
     try {
       const post = new Post(req);
       const response = await post.readOnePost();
-      return res.json(response);
+      return res.status(200).json(response);
     } catch (err) {
       throw res.status(500).json(err);
     }
   },
 
   updatePost: async (req, res) => {
-    const post = new Post(req);
-    const response = await post.updatePost();
-    console.log(response);
-    return res.json(response);
+    try {
+      const post = new Post(req);
+      const response = await post.updatePost();
+      return res.status(200).json(response);
+    } catch (err) {
+      throw res.status(500).json(err);
+    }
   },
 
   deletePost: async (req, res) => {
-    const post = new Post(req);
-    const response = await post.deletePost();
-    return res.json(response);
+    try {
+      const post = new Post(req);
+      const response = await post.deletePost();
+      return res.status(200).json(response);
+    } catch (err) {
+      throw res.status(500).json(err);
+    }
   },
 
   readAllPosts: async (req, res) => {
-    const post = new Post(req);
-    const response = await post.readAllPosts();
-    return res.json(response);
+    try {
+      const post = new Post(req);
+      const response = await post.readAllPosts();
+      return res.status(200).json(response);
+    } catch (err) {
+      throw res.status(500).json(err);
+    }
   },
 
   readMainPosts: async (req, res) => {
-    const post = new Post(req);
-    const response = await post.readProfilePosts();
-    return res.json(response);
+    try {
+      const post = new Post(req);
+      const response = await post.readProfilePosts();
+      return res.status(200).json(response);
+    } catch (err) {
+      throw res.status(500).json(err);
+    }
   },
 };
 

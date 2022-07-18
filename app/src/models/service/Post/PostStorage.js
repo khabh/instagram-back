@@ -17,7 +17,7 @@ class PostStorage {
   static async addNewPost({ userNo, content }) {
     try {
       const query = content
-        ? `INSERT INTO posts(user_no, content) VALUES(${userNo}, ${content});`
+        ? `INSERT INTO posts(user_no, content) VALUES(${userNo}, "${content}");`
         : `INSERT INTO posts(user_no) VALUES(${userNo})`;
       const response = await db.query(query);
 
@@ -32,7 +32,7 @@ class PostStorage {
     try {
       let query = "";
       images.forEach((imageUrl, index) => {
-        query += `INSERT INTO images(image_url,post_no,order_no) VALUES('${imageUrl}',${postNo},${
+        query += `INSERT INTO images(image_url,post_no,order_no) VALUES("${imageUrl}",${postNo},${
           index + 1
         });`;
       });
@@ -55,12 +55,24 @@ class PostStorage {
     }
   }
 
-  static async readAllPosts() {
-    const query =
-      "SELECT posts.no, images.order_no,users.nickname, posts.created_date, updated_date, posts.content, images.image_url FROM images LEFT JOIN posts ON images.post_no = posts.no LEFT JOIN users ON posts.user_no = users.no ";
+  static async getAllPostsNo() {
+    const query = "SELECT no FROM posts";
     const response = await db.query(query);
-
     return response[0];
+  }
+
+  static async readAllPosts(allPostsNo) {
+    try {
+      let query = "";
+      allPostsNo.forEach(({ no }) => {
+        query += `SELECT posts.no, posts.user_no, users.nickname, users.profile_image, posts.created_date, updated_date, posts.content, images.image_url FROM images LEFT JOIN posts ON images.post_no = posts.no LEFT JOIN users ON posts.user_no = users.no WHERE posts.no = ${no} ORDER BY images.order_no;`;
+      });
+      const response = await db.query(query);
+
+      return response[0];
+    } catch (err) {
+      throw { success: false, msg: err };
+    }
   }
 
   static async deletePost(postNo) {
@@ -80,7 +92,7 @@ class PostStorage {
         "UPDATE posts SET content = ?, updated_date = NOW() WHERE no = ?;";
       const response = await db.query(qurey, [content, postNo]);
 
-      return response[0]; // affectedPows, insertId, changedRows
+      return response[0];
     } catch (err) {
       throw { success: false, msg: err };
     }

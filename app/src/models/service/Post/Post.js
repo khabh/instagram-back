@@ -10,9 +10,27 @@ class Post {
 
   async readAllPosts() {
     try {
-      const response = await PostStorage.readAllPosts();
-      console.log(response);
-      return response;
+      const allPostsNo = await PostStorage.getAllPostsNo();
+      const allPostsResult = await PostStorage.readAllPosts(allPostsNo);
+      const allPostsInfo = [];
+      allPostsResult.forEach((postInfo) => {
+        const result = {};
+        const images = [];
+        postInfo.forEach(({ image_url }) => {
+          images.push(image_url);
+        });
+        result.postNo = postInfo[0].no;
+        result.userNo = postInfo[0].user_no;
+        result.nickname = postInfo[0].nickname;
+        result.porfileImage = postInfo[0].profile_image;
+        result.content = postInfo[0].content;
+        result.images = images;
+        result.date = postInfo[0].updated_date
+          ? postInfo[0].updated_date
+          : postInfo[0].created_date;
+        allPostsInfo.push(result);
+      });
+      return allPostsInfo;
     } catch (err) {
       throw { success: false, msg: err.msg };
     }
@@ -20,20 +38,22 @@ class Post {
 
   async readOnePost() {
     try {
-      const response = await PostStorage.getOnePost(this.params.postNo);
-      if (response.length === 0) {
+      const particularPostInfo = await PostStorage.getOnePost(
+        this.params.postNo
+      );
+      if (particularPostInfo.length === 0) {
         return { success: false, msg: "존재하지 않는 post입니다." };
       }
-      const images = response.reduce((result, postInfo) => {
+      const images = particularPostInfo.reduce((result, postInfo) => {
         result.push(postInfo.image_url);
         return result;
       }, []);
       const postInfo = {};
-      postInfo.content = response[0].content;
+      postInfo.content = particularPostInfo[0].content;
       postInfo.images = images;
-      postInfo.date = response[0].updated_date
-        ? response[0].updated_date
-        : response[0].created_date;
+      postInfo.date = particularPostInfo[0].updated_date
+        ? particularPostInfo[0].updated_date
+        : particularPostInfo[0].created_date;
 
       return postInfo;
     } catch (err) {
@@ -70,7 +90,6 @@ class Post {
 
           return { success: true, msg: "게시물이 추가되었습니다." };
         } catch (err) {
-          console.log();
           throw { success: false, msg: err.msg };
         }
       }
@@ -87,9 +106,9 @@ class Post {
 
   async deletePost() {
     try {
-      const response = await PostStorage.deletePost(this.params.postNo);
+      const deleteResult = await PostStorage.deletePost(this.params.postNo);
 
-      return response.affectedRows
+      return deleteResult.affectedRows
         ? { success: true, msg: "게시물이 삭제되었습니다." }
         : { success: false, msg: "게시물이 삭제되지 않았습니다" };
     } catch (err) {
@@ -122,9 +141,9 @@ class Post {
 
   async updatePost() {
     try {
-      const response = await PostStorage.updatePost(this.body);
+      const updateResult = await PostStorage.updatePost(this.body);
 
-      return response.affectedRows
+      return updateResult.affectedRows
         ? { success: true, msg: "게시물이 수정되었습니다." }
         : { success: false, msg: "게시물이 수정되지 않았습니다" };
     } catch (err) {

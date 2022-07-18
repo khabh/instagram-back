@@ -17,8 +17,10 @@ app.use(express.urlencoded({ extended: true }));
 //라우팅
 const temp = require("./src/apis/default");
 const post = require("./src/apis/post");
+const comment = require("./src/apis/comment");
 
 app.use("/moae", temp); //미들웨어 등록
 app.use("/moae/post", post); //미들웨어 등록
+app.use("/moae/comment", comment); //미들웨어 등록
 
 module.exports = app;
