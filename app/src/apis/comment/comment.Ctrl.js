@@ -39,6 +39,9 @@ const process = {
   deleteComment: async (req, res) => {
     try {
       const comment = new Comment(req);
+      const response = await comment.deleteComment();
+
+      return res.status(200).json(response);
     } catch (err) {
       throw res.status(500).json(err);
     }
